@@ -14,29 +14,21 @@ const schema = require('./schema');
 const users = require('./routes/users');
 const polls = require('./routes/polls');
 
-const mongo = require('mongodb');
-const monk = require('monk');
-var db = monk('localhost:27017/votedb');
+const mongoose = require('mongoose');
+const db = 'mongodb://localhost/votedb';
+mongoose.connect(db);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use(function (req, res, next) {
-    req.db = db;
-    next();
-});
-
-// app.use(require('webpack-dev-middleware') (compiler, {
-    //     noInfo: true,
-    //     publicPath: config.output.publicPath
-    // })) <- 12/7 not sure if needed
 app.use('/polls', polls);
-app.use('/users', users);
-app.use(express.static(path.join(__dirname, './src')));
-app.use('/graphql', expressGraphQL({
-    schema,
-    graphiql: true,
-}));
+// app.use('/users', users);
+// commenting out the below section because i'm going to separate the projects into an API and a UI project
+// app.use(express.static(path.join(__dirname, './src/bundle.js')));
+// app.use('/graphql', expressGraphQL({
+//     schema,
+//     graphiql: true,
+// }));
 
 app.listen(3000, () => {
     console.log('listening on 3000');

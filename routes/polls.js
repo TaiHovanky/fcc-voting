@@ -1,12 +1,16 @@
 const express = require('express');
 const router = express.Router();
+const Poll = require('../models/poll-model');
 
 router.get('/allpolls', function (req, res) {
-    let db = req.db;
-    let collection = db.get('polls');
-    collection.find({}, {}, function (e, docs) {
-        res.json(docs);
-    });
+    Poll.find()
+        .exec((err, polls) => {
+            if (err) {
+                res.send('error happened: ', err);
+            }
+            console.log('poll', polls)
+            res.json(polls);
+        });
 });
 
 module.exports = router;
