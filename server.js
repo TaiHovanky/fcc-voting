@@ -1,15 +1,16 @@
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const path = require('path');
-
 const webpack = require('webpack');
 const config = require('./webpack.config');
 const compiler = webpack(config);
 
 const express = require('express');
+const expressGraphQL = require('express-graphql');
 const app = express();
 
 // const routes = require('./routes/index');
+const schema = require('./schema');
 const users = require('./routes/users');
 const polls = require('./routes/polls');
 
@@ -32,7 +33,11 @@ app.use(function (req, res, next) {
 app.use('/polls', polls);
 app.use('/users', users);
 app.use(express.static(path.join(__dirname, './src')));
-    
+app.use('/graphql', expressGraphQL({
+    schema,
+    graphiql: true,
+}));
+
 app.listen(3000, () => {
     console.log('listening on 3000');
 });
