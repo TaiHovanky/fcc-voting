@@ -5,11 +5,17 @@ const PollSchema = new Schema({
     question: String,
     option1: {
         name: String,
-        votes: Number
+        votes: {
+            type: Number,
+            default: 0
+        }
     },
     option2: {
         name: String,
-        votes: Number
+        votes: {
+            type: Number,
+            default: 0
+        }
     }
 });
 
