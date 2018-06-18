@@ -16,6 +16,9 @@ const PollSchema = new Schema({
             type: Number,
             default: 0
         }
+    },
+    postedBy: {
+        type: Schema.Types.ObjectId, ref: 'User'
     }
 });
 

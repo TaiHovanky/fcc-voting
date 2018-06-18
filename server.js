@@ -11,6 +11,7 @@ const app = express();
 
 const schema = require('./schema');
 const Poll = require('./models/poll-model');
+const User = require('./models/user-model');
 
 const mongoose = require('mongoose');
 const db = 'mongodb://localhost/votedb';
@@ -29,18 +30,67 @@ app.get('/allpolls', (req, res) => {
         });
 });
 
+app.get('/allusers', (req, res) => {
+    User.find()
+        .exec((err, users) => {
+            if (err) {
+                res.send('error happened: ', err);
+            }
+            res.json(users);
+        });
+});
+
+app.get('/pollsForUser/:name', (req, res) => {
+    User.findOne({ name: req.params.name })
+        .populate('polls')
+        .exec((err, person) => {
+            if (err) {
+                res.send('error happened: ', err);
+            }
+            res.send(person);
+        });
+});
+
 app.post('/addpoll', (req, res) => {
     const newPoll = new Poll();
-        newPoll.question = req.body.question;
-        newPoll.option1.name = req.body.option1Name;
-        newPoll.option2.name = req.body.option2Name;
+    newPoll.question = req.body.question;
+    newPoll.option1.name = req.body.option1Name;
+    newPoll.option2.name = req.body.option2Name;
+    newPoll.postedBy = req.body.postedBy;
 
-        newPoll.save(function(err, poll) {
+    newPoll.save(function(err, poll) {
+        if (err) {
+            res.send('error', err);
+        }
+        console.log('newly added poll', poll)
+        // update user so that its array has poll created for that user
+        User.findOneAndUpdate({
+            _id: poll.postedBy
+        }, {
+            $push: { polls: poll }
+        }, {
+            upsert: false
+        }, function (err, updatedUser) {
             if (err) {
                 res.send('error', err);
             }
-            res.send(poll);
         });
+    });
+});
+
+app.post('/adduser', (req, res) => {
+    const newUser = new User();
+    newUser.name = req.body.name;
+    newUser.email = req.body.email;
+    newUser.password = req.body.password;
+
+    newUser.save(function(err, user) {
+        if (err) {
+            console.log('error--------', err)
+            res.send('error', err);
+        }
+        res.send(user);
+    });
 });
 
 app.put('/poll/:id/:option', (req, res) => {
