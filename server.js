@@ -47,7 +47,7 @@ app.get('/pollsForUser/:name', (req, res) => {
             if (err) {
                 res.send('error happened: ', err);
             }
-            res.send(person);
+            res.send(person.polls);
         });
 });
 
@@ -86,7 +86,6 @@ app.post('/adduser', (req, res) => {
 
     newUser.save(function(err, user) {
         if (err) {
-            console.log('error--------', err)
             res.send('error', err);
         }
         res.send(user);
