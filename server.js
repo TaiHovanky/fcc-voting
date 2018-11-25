@@ -5,7 +5,6 @@ const express = require('express');
 const expressGraphQL = require('express-graphql');
 const app = express();
 
-const schema = require('./schema');
 const Poll = require('./models/poll-model');
 const User = require('./models/user-model');
 
@@ -109,12 +108,6 @@ app.put('/poll/:id/:option', (req, res) => {
         res.send(updatedPoll);
     })
 })
-// commenting out the below section because i'm going to separate the projects into an API and a UI project
-// app.use(express.static(path.join(__dirname, './src/bundle.js')));
-app.use('/graphql', expressGraphQL({
-    schema,
-    graphiql: true,
-}));
 
 app.listen(3000, () => {
     console.log('listening on 3000');
