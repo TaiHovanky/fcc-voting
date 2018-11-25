@@ -1,9 +1,5 @@
-const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const path = require('path');
-const webpack = require('webpack');
-const config = require('./webpack.config');
-const compiler = webpack(config);
 
 const express = require('express');
 const expressGraphQL = require('express-graphql');
@@ -62,7 +58,6 @@ app.post('/addpoll', (req, res) => {
         if (err) {
             res.send('error', err);
         }
-        console.log('newly added poll', poll)
         // update user so that its array has poll created for that user
         User.findOneAndUpdate({
             _id: poll.postedBy
